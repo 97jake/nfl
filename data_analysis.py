@@ -1,15 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
 
 
 import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
-
-
-# In[5]:
+from scipy.spatial import KDTree
 
 
 def get_play_csv():
@@ -26,13 +23,7 @@ def get_game_id(gameId,week_df):
     return week_df[week_df['gameId'] == gameId]
 
 
-# In[6]:
-
-
 play_df = get_play_csv()
-
-
-# In[11]:
 
 
 def completions_per_play_type():
@@ -87,11 +78,7 @@ def completions_per_play_type():
     fig.tight_layout()
 
     plt.show()
-    
-completions_per_play_type()
 
-
-# In[247]:
 
 
 def get_line_of_scrimmage():
@@ -114,8 +101,6 @@ def get_line_of_scrimmage():
     
     return play_ls
 
-
-# In[256]:
 
 
 def time_in_pocket():
@@ -204,181 +189,134 @@ def time_in_pocket():
     
 
 
-# In[258]:
-
-
 #Attempt to calculate average distance between defense and offensive players per play
-
-week1_df = get_week_csv(1)
-play_df = get_play_csv()
-
-radius = 1
-close = 0
-
-wr_df = week1_df[week1_df['position'] == 'WR']
-rb_df = week1_df[week1_df['position'] == 'RB']
-te_df = week1_df[week1_df['position'] == 'TE']
-
-ss_df = week1_df[week1_df['position'] == 'SS']
-fs_df = week1_df[week1_df['position'] == 'FS']
-cb_df = week1_df[week1_df['position'] == 'CB']
-
-games = week1_df['gameId'].unique()
-
-for game in games:
+def average_distance():
     
-    game_df = week1_df[week1_df['gameId'] == game]
-    
-    plays = game_df['playId'].unique()
-    
-    for play in plays:
-        
-        sub_df = game_df[game_df['playId'] == play]
-        
-        offense = sub_df[['TE','RB','WR']]
+    week1_df = get_week_csv(1)
+    play_df = get_play_csv()
 
-        defense = sub_df[['CB','SS','FS']]
-        
-        frames = sub_df['frameId'].unique()
-        
-        for frame in frames:
-        
-            offense_x = offense['x']
-            offense_y = offense['y']
-            defense_x = defense['x']
-            defense_y = defense['y']
-        
-            offense_coord = list(zip(offense_x,offense_y))
-            defense_coord = list(zip(defense_x,defense_y))
-            
-            for i in range(len(offense_coord)):
-                for j in range(len(defense_coord)):
-                    distance = (offense_coord[i][0] - defense_coord[j][0])**2 + (offense_coord[i][1] - defense_coord[j][1])**2
-                    if distance < radius:
-                        count+=1
-            
-            
-        
-        
-    
+    radius = 1
+    close = 0
+
+    wr_df = week1_df[week1_df['position'] == 'WR']
+    rb_df = week1_df[week1_df['position'] == 'RB']
+    te_df = week1_df[week1_df['position'] == 'TE']
+
+    ss_df = week1_df[week1_df['position'] == 'SS']
+    fs_df = week1_df[week1_df['position'] == 'FS']
+    cb_df = week1_df[week1_df['position'] == 'CB']
+
+    games = week1_df['gameId'].unique()
+
+    for game in games:
+
+        game_df = week1_df[week1_df['gameId'] == game]
+
+        plays = game_df['playId'].unique()
+
+        for play in plays:
+
+            sub_df = game_df[game_df['playId'] == play]
+
+            offense = sub_df[['TE','RB','WR']]
+
+            defense = sub_df[['CB','SS','FS']]
+
+            frames = sub_df['frameId'].unique()
+
+            for frame in frames:
+
+                offense_x = offense['x']
+                offense_y = offense['y']
+                defense_x = defense['x']
+                defense_y = defense['y']
+
+                offense_coord = list(zip(offense_x,offense_y))
+                defense_coord = list(zip(defense_x,defense_y))
+
+                for i in range(len(offense_coord)):
+                    for j in range(len(defense_coord)):
+                        distance = (offense_coord[i][0] - defense_coord[j][0])**2 + (offense_coord[i][1] - defense_coord[j][1])**2
+                        if distance < radius:
+                            count+=1
 
 
-# In[263]:
 
-
-#The above cell was an attempt to find the average distance between a defender and an offensive player during the course 
+#The average_distance() function was an attempt to find the average distance between a defender and an offensive player during the course 
 # of a play but it didn't work because it proved difficult finding the nearest defender at any given moment.
-#So in this cell I use a KDTree to find the nearest neighbor of an offensive player to find the closest defender
+#So in this function I use a KDTree to find the nearest neighbor of an offensive player to find the closest defender
 
-from scipy.spatial import KDTree
+def kd_tree_distance():
 
-#Get csv data
-week1_df = get_week_csv(1)
-play_df = get_play_csv()
+    #Get csv data
+    week1_df = get_week_csv(1)
+    play_df = get_play_csv()
 
 
-frame_average = []
-play_average = {}
+    frame_average = []
+    play_average = {}
 
-#Get unique games in week 1
-games = list(week1_df['gameId'].unique())
+    #Get unique games in week 1
+    games = list(week1_df['gameId'].unique())
 
-#Start with first game
-game_df = week1_df[week1_df['gameId'] == games[0]]
+    #Start with first game
+    game_df = week1_df[week1_df['gameId'] == games[0]]
 
-#Get unique plays in first game
-plays = list(game_df['playId'].unique())
+    #Get unique plays in first game
+    plays = list(game_df['playId'].unique())
 
-for play in plays:
+    for play in plays:
 
-    #Get play dataframe
-    play_df = game_df[game_df['playId'] == play]
+        #Get play dataframe
+        play_df = game_df[game_df['playId'] == play]
 
-    #Get unique frames in play
-    frames = list(play_df['frameId'].unique())
+        #Get unique frames in play
+        frames = list(play_df['frameId'].unique())
 
-    for frame in frames:
+        for frame in frames:
+
+            distances = []
+
+            #Get frame dataframe
+            frame_df = play_df[play_df['frameId'] == frame]
+
+            #Lists of offensive and defensive players
+            offensive_players = ['WR','TE','FB']
+            defensive_players = ['SS','FS','CB','LB','MLB']
+
+            #Get dataframes of offensive and defensive players
+            o_df = frame_df[frame_df['position'].isin(offensive_players)]
+            d_df = frame_df[frame_df['position'].isin(defensive_players)]
+
+            #Coordinates of offensive players
+            o_x_coord = list(o_df['x'])
+            o_y_coord = list(o_df['y'])
+
+            #Coordinates of defensive players
+            d_x_coord = list(d_df['x'])
+            d_y_coord = list(d_df['y'])
+
+            o_zipped_coord = list(zip(o_x_coord,o_y_coord))
+            d_zipped_coord = list(zip(d_x_coord,d_y_coord))
+
+            #Create KD tree of defensive players
+            train_tree = KDTree(d_zipped_coord)
+
+            #Find nearest defensive neighbor
+            for player in o_zipped_coord:
+                distance, indices = train_tree.query(player, 1)
+                distances.append(distance)
+
+            #Find average defensive distance
+            frame_average.append(sum(distances)/len(distances))
+
+        play_average[play] = sum(frame_average)/len(frame_average)
         
-        distances = []
-        
-        #Get frame dataframe
-        frame_df = play_df[play_df['frameId'] == frame]
-        
-        #Lists of offensive and defensive players
-        offensive_players = ['WR','TE','FB']
-        defensive_players = ['SS','FS','CB','LB','MLB']
+    return play_average
 
-        #Get dataframes of offensive and defensive players
-        o_df = frame_df[frame_df['position'].isin(offensive_players)]
-        d_df = frame_df[frame_df['position'].isin(defensive_players)]
-
-        #Coordinates of offensive players
-        o_x_coord = list(o_df['x'])
-        o_y_coord = list(o_df['y'])
-
-        #Coordinates of defensive players
-        d_x_coord = list(d_df['x'])
-        d_y_coord = list(d_df['y'])
-
-        o_zipped_coord = list(zip(o_x_coord,o_y_coord))
-        d_zipped_coord = list(zip(d_x_coord,d_y_coord))
-
-        #Create KD tree of defensive players
-        train_tree = KDTree(d_zipped_coord)
-
-        #Find nearest defensive neighbor
-        for player in o_zipped_coord:
-            distance, indices = train_tree.query(player, 1)
-            distances.append(distance)
-
-        #Find average defensive distance
-        frame_average.append(sum(distances)/len(distances))
-
-    play_average[play] = sum(frame_average)/len(frame_average)
-
-
-# In[269]:
-
-
-play_average[190]
-
-
-# In[239]:
-
-
-games = list(week1_df['gameId'].unique())
-
-play_game_df = play_df[play_df['gameId'] == games[0]]
-
-#complete_df = play_game_df[play_game_df['passResult'] == 'C']
-#incomplete_df = play_game_df[play_game_df['passResult'] == 'I']
-
-
-# In[243]:
-
-
-play_average[190]
-
-
-# In[245]:
-
-
-#String concatenation attempt
-myString = '/home/documents/'
-my_input = 1
-week = 'week' + str(my_input)
-
-new_string = myString + week
-
-print(new_string)
-
-
-# In[308]:
 
 
 #The following creates a dictionary connecting a play ID to the targeted player
-
-from scipy.spatial import KDTree
 
 def intended_target(gameId):
     
@@ -451,13 +389,8 @@ def intended_target(gameId):
 targeted_player = intended_target(2018090600)
 
 
-# In[316]:
+print(targeted_player[3066])
 
-
-targeted_player[3066]
-
-
-# In[ ]:
 
 
 
