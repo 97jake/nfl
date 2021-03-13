@@ -146,7 +146,4 @@ team_list = get_drive_info(ids)
 
 
 
-team_list[:20]
-
-
-
+print(team_list[:20])
