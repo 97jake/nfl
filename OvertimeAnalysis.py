@@ -148,7 +148,5 @@ team_list = get_drive_info(ids)
 
 team_list[:20]
 
-print("hello world")
-
 
 
