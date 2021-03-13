@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[118]:
-
 
 from bs4 import BeautifulSoup as bs
 import requests
@@ -10,7 +8,6 @@ import re
 import pandas as pd
 
 
-# In[119]:
 
 
 play_df = pd.read_csv('plays.csv')
@@ -22,10 +19,22 @@ print("Available teams - ")
 print(new_team_abbr)
 
 
-# In[120]:
-
-
 def get_drive_info(game_ids):
+    """
+    
+
+    Parameters
+    ----------
+    game_ids : list(int)
+        List of game ids generated from the get_game_ids() function
+
+    Returns
+    -------
+    results : list(tuple)
+        List of tuples containing info about each drive. Each tuple is formatted as follows - 
+            (Team Name (str,abbreviation), Result of Play (str), Starting YardLine)
+
+    """
     
     results = []
     
@@ -71,11 +80,6 @@ def get_drive_info(game_ids):
             
     return results
         
-        
-
-
-# In[125]:
-
 
 def get_game_ids(team_abbr,year):
     game_ids = []
@@ -102,27 +106,49 @@ def get_game_ids(team_abbr,year):
     
     return game_ids
 
+def get_starting_yard(game_ids):
+        
+    my_url = 'https://www.espn.com/nfl/playbyplay?gameId={}'.format(game_ids)
 
-# In[129]:
+    req = requests.get(my_url)
+    my_text = req.text
+    soup = bs(my_text, 'html.parser')
+
+    sub_soup = soup.find(id='main-container')
+    
+    action_soup = sub_soup.find_all('ul', class_='drive-list')
+    
+    actions = []
+    i = 1
+    for stuff in action_soup:
+        test = stuff.find_all('h3')
+        #print("Drive number - {}".format(i))
+        for things in test:
+            action_text = things.get_text()
+            if not action_text:
+                pass
+            else:
+                down = action_text[0]
+                if down != "1":
+                    pass
+                else:
+                    #print("Starting position - {}".format(action_text))
+                    actions.append(action_text)
+                    i+=1
+                    break
 
 
 ids= get_game_ids('bal',2016)
 
 
-# In[130]:
-
 
 team_list = get_drive_info(ids)
 
 
-# In[131]:
-
 
 team_list[:20]
 
-
-# In[ ]:
-
 print("hello world")
+
 
 
