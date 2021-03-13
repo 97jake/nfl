@@ -146,15 +146,6 @@ ids= get_game_ids('bal',2016)
 team_list = get_drive_info(ids)
 
 
-
-<<<<<<< Updated upstream
-team_list[:20]
-
-print("hello world")
-=======
-#team_list[:20]
-
-
 def touchdown(team_list, team):
     """
     Function to compile the number of touchdown
@@ -221,7 +212,3 @@ def create_histogram(team_list, team):
     plt.show()
 
 create_histogram(team_list, 'bal')
->>>>>>> Stashed changes
-
-
-
