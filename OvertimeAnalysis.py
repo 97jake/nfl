@@ -146,9 +146,9 @@ team_list = get_drive_info(ids)
 
 
 
-<<<<<<< Updated upstream
+
 print(team_list[:20])
-=======
+
 
 team_list[:20]
 
@@ -222,6 +222,3 @@ def create_histogram(team_list, team):
 create_histogram(team_list, 'bal')
 
 
-
-
->>>>>>> Stashed changes
