@@ -247,6 +247,8 @@ def get_starting_yard(game_id,team_abbr):
                         drive_info = (myTeam, num)
                     
                         actions.append(drive_info)
+    
+    return actions
 
 
 
