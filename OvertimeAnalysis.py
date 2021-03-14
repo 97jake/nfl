@@ -248,12 +248,6 @@ def get_starting_yard(game_id,team_abbr):
                     
                         actions.append(drive_info)
 
-<<<<<<< Updated upstream
-ids= get_game_ids('bal',2016)
-
-
-
-team_list = get_drive_info(ids)
 
 
 def touchdown(team_list, team):
@@ -321,9 +315,4 @@ def create_histogram(team_list, team):
     plt.tight_layout()
     plt.show()
 
-create_histogram(team_list, 'bal')
-=======
-                    break
-    
-    return actions
->>>>>>> Stashed changes
+
