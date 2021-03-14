@@ -317,4 +317,5 @@ def create_histogram(team_list, team):
     plt.tight_layout()
     plt.show()
 
+print("hello")
 
