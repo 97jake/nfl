@@ -54,6 +54,8 @@ def get_drive_info(team_abbr,year):
     #Loop through each game of the season
     for game in game_ids:
         
+        #print("Game id - {}".format(game))
+        
         my_url = 'https://www.espn.com/nfl/playbyplay?gameId={}'.format(game)
         
         req = requests.get(my_url)
@@ -247,6 +249,12 @@ def get_starting_yard(game_id,team_abbr):
                         drive_info = (myTeam, num)
                     
                         actions.append(drive_info)
+        
+    return actions
+
+
+
+
 
 
 
@@ -316,3 +324,4 @@ def create_histogram(team_list, team):
     plt.show()
 
 
+get_drive_info("BAL",2016)
