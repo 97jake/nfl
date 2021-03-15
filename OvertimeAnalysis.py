@@ -25,7 +25,7 @@ def get_abbreviations():
     
     print("Available teams - ")
     print(new_team_abbr)
-    
+  
 
 def get_drive_info(team_abbr,year):
     """
@@ -105,7 +105,7 @@ def get_drive_info(team_abbr,year):
 
     #Return list of tuples
     return results
-        
+      
 
 def get_game_ids(team_abbr,year):
     """
@@ -159,6 +159,9 @@ def get_game_ids(team_abbr,year):
             game_ids.append(game_id[0])
     
     return game_ids
+
+
+
 
 def get_starting_yard(game_id,team_abbr):
     """
@@ -277,13 +280,11 @@ def touchdown(team_list, team):
         any given starting field position
     """
     lengths = []
-    totals = []
     for item in team_list:
         if item[0] == team:
-            totals.append(int(item[2]))
             if item[1] == "Touchdown":
                 lengths.append(int(item[2]))
-    return lengths, totals
+    return lengths
 
 
 def create_histogram(team_list, team):
@@ -317,5 +318,5 @@ def create_histogram(team_list, team):
     plt.tight_layout()
     plt.show()
 
-print("hello")
+
 
