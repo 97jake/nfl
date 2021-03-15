@@ -322,6 +322,3 @@ def create_histogram(team_list, team):
     plt.title("Touchdowns")
     plt.tight_layout()
     plt.show()
-
-
-get_drive_info("BAL",2016)
