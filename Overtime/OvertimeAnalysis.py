@@ -69,7 +69,7 @@ def get_drive_info(team_abbr,year):
         #Gets the team acronym at each drive
         logos = sub_soup.find_all('span', class_='home-logo')
 
-        team = re.compile("nfl/500/([a-z]{3})")
+        team = re.compile("nfl/500/([a-z]{2,3})")
 
         team_abbrs = []
 
@@ -316,5 +316,4 @@ def create_histogram(team_list, team):
     plt.title("Touchdowns")
     plt.tight_layout()
     plt.show()
-
 
