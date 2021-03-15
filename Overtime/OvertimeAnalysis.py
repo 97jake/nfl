@@ -71,7 +71,7 @@ def get_drive_info(team_abbr,year):
         #Gets the team acronym at each drive
         logos = sub_soup.find_all('span', class_='home-logo')
 
-        team = re.compile("nfl/500/([a-z]{3})")
+        team = re.compile("nfl/500/([a-z]{2,3})")
 
         team_abbrs = []
 
@@ -221,6 +221,7 @@ def get_starting_yard(game_id,team_abbr):
             continue
 
         driveSearch = driveDowns[0]
+
         
         #Iterate through each play of the drive
         for things in test:
@@ -249,11 +250,10 @@ def get_starting_yard(game_id,team_abbr):
                         drive_info = (myTeam, num)
                     
                         actions.append(drive_info)
-        
+                    
+                    break
+    
     return actions
-
-
-
 
 
 
