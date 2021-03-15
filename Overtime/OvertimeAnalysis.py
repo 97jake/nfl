@@ -25,7 +25,7 @@ def get_abbreviations():
     
     print("Available teams - ")
     print(new_team_abbr)
-  
+    
 
 def get_drive_info(team_abbr,year):
     """
@@ -69,7 +69,7 @@ def get_drive_info(team_abbr,year):
         #Gets the team acronym at each drive
         logos = sub_soup.find_all('span', class_='home-logo')
 
-        team = re.compile("nfl/500/([a-z]{3})")
+        team = re.compile("nfl/500/([a-z]{2,3})")
 
         team_abbrs = []
 
@@ -105,7 +105,7 @@ def get_drive_info(team_abbr,year):
 
     #Return list of tuples
     return results
-      
+        
 
 def get_game_ids(team_abbr,year):
     """
@@ -159,9 +159,6 @@ def get_game_ids(team_abbr,year):
             game_ids.append(game_id[0])
     
     return game_ids
-
-
-
 
 def get_starting_yard(game_id,team_abbr):
     """
@@ -222,6 +219,7 @@ def get_starting_yard(game_id,team_abbr):
             continue
 
         driveSearch = driveDowns[0]
+
         
         #Iterate through each play of the drive
         for things in test:
@@ -250,6 +248,8 @@ def get_starting_yard(game_id,team_abbr):
                         drive_info = (myTeam, num)
                     
                         actions.append(drive_info)
+                    
+                    break
     
     return actions
 
@@ -280,11 +280,13 @@ def touchdown(team_list, team):
         any given starting field position
     """
     lengths = []
+    totals = []
     for item in team_list:
         if item[0] == team:
+            totals.append(int(item[2]))
             if item[1] == "Touchdown":
                 lengths.append(int(item[2]))
-    return lengths
+    return lengths, totals
 
 
 def create_histogram(team_list, team):
@@ -317,6 +319,4 @@ def create_histogram(team_list, team):
     plt.title("Touchdowns")
     plt.tight_layout()
     plt.show()
-
-
 
