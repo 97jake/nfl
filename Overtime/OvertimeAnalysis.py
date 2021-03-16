@@ -7,7 +7,7 @@ import requests
 import re
 import pandas as pd
 from matplotlib import pyplot as plt
-
+import numpy as np
 
 
 def get_abbreviations():
@@ -23,8 +23,7 @@ def get_abbreviations():
     
     new_team_abbr = [team.lower() for team in team_abbreviations]
     
-    print("Available teams - ")
-    print(new_team_abbr)
+    return new_team_abbr
     
 
 def get_drive_info(team_abbr,year):
@@ -45,6 +44,7 @@ def get_drive_info(team_abbr,year):
             (Team Name (str,abbreviation), Result of Play (str), Starting YardLine (int))
 
     """
+    team_abbr = team_abbr.upper()
     
     #Get list of ESPN assigned game ids for corresponding season
     game_ids = get_game_ids(team_abbr,year)
@@ -85,6 +85,11 @@ def get_drive_info(team_abbr,year):
 
             team_abbrs.append(team_logo)
         
+        unique_teams = np.unique(np.array(team_abbrs))
+        for nfl_team in unique_teams:
+            if nfl_team.upper() != team_abbr.upper():
+                opposing_team = str(nfl_team)
+        
         #Get a list of tuples containing starting yard information
         starting_yard = get_starting_yard(game,team_abbr)
         yards = []
@@ -102,11 +107,17 @@ def get_drive_info(team_abbr,year):
         
         #Create tuple of information
         for i in range(len(headlines)):
-            detail_tuple = (team_abbrs[i],headlines[i],yards[i])
+            detail_tuple = (year,team_abbrs[i],game,opposing_team,yards[i],headlines[i])
             results.append(detail_tuple)
+    
+    #Edit list to only include drives of specified team
+    team_results = []
+    for item in results:
+        if item[1] == team_abbr.lower():
+            team_results.append(item)
 
     #Return list of tuples
-    return results
+    return team_results
         
 
 def get_game_ids(team_abbr,year):
@@ -125,6 +136,7 @@ def get_game_ids(team_abbr,year):
         List of strings containing all the ESPN assigned game ids for a given season
 
     """
+    team_abbr = team_abbr.upper()
     game_ids = []
     
     my_url = 'https://www.espn.com/nfl/team/schedule/_/name/{}/season/{}'.format(team_abbr,year)
@@ -178,7 +190,7 @@ def get_starting_yard(game_id,team_abbr):
         A list of tuples each containing the team side and the yard number per drive
 
     """    
-    
+    team_abbr = team_abbr.upper()
     my_url = 'https://www.espn.com/nfl/playbyplay?gameId={}'.format(game_id)
     
     yard = re.compile("([0-9]{1,2})")
@@ -219,8 +231,12 @@ def get_starting_yard(game_id,team_abbr):
         if not driveDowns:
             actions.append((team_abbr,-1))
             continue
-
-        driveSearch = driveDowns[0]
+        
+        #Accounts for the case where the down number is completely missing
+        if '1' in driveDowns:
+            driveSearch = '1'
+        else:
+            driveSearch = driveDowns[0]
 
         
         #Iterate through each play of the drive
@@ -322,3 +338,5 @@ def create_histogram(team_list, team):
     plt.title("Touchdowns")
     plt.tight_layout()
     plt.show()
+    
+print(get_abbreviations())
