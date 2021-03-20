@@ -1,0 +1,40 @@
+ncaa.db description file
+
+Tables:
+ - TeamStats
+
+Columns - 
+
+3-pt Field Goal Attempts
+Assist Turnover Ratio
+Assists Per Game
+Blocked Shots Per Game
+Defensive Rebounds per Game
+Fewest Fouls
+Fewest Turnovers
+Field-Goal Percentage
+Field-Goal Percentage Defense
+Free Throw Attempts
+Free Throws Made
+Free-Throw Percentage
+Offensive Rebounds Per Game
+Personal Fouls Per Game
+Rebound Margin
+Scoring Defense
+Scoring Margin
+Scoring Offense
+Steals Per Game
+Three Pt FG Defense
+Three-Point Field Goals Per Game
+Three-Point Field-Goal Percentage
+Total 3-point FGM
+Total Assists
+Total Blocks
+Total Rebounds
+Total Rebounds Per Game
+Total Steals
+Turnover Margin
+Turnovers Forced
+Turnovers Per Game
+Won-Lost Percentage
+
