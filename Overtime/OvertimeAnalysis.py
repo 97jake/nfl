@@ -47,6 +47,7 @@ def get_drive_info(team_abbr,year):
             (Team Name (str,abbreviation), Result of Play (str), Starting YardLine (int))
 
     """
+    team_abbr = team_abbr.upper()
     
     #Get list of ESPN assigned game ids for corresponding season
     game_ids = get_game_ids(team_abbr,year)
@@ -125,6 +126,7 @@ def get_game_ids(team_abbr,year):
         List of strings containing all the ESPN assigned game ids for a given season
 
     """
+    team_abbr = team_abbr.upper()
     game_ids = []
     
     my_url = 'https://www.espn.com/nfl/team/schedule/_/name/{}/season/{}'.format(team_abbr,year)
@@ -178,6 +180,7 @@ def get_starting_yard(game_id,team_abbr):
         A list of tuples each containing the team side and the yard number per drive
 
     """    
+    team_abbr = team_abbr.upper()
     
     my_url = 'https://www.espn.com/nfl/playbyplay?gameId={}'.format(game_id)
     
