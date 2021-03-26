@@ -7,6 +7,8 @@ import requests
 import re
 import pandas as pd
 from matplotlib import pyplot as plt
+import numpy as np
+from scipy.optimize import curve_fit
 
 
 
@@ -253,6 +255,13 @@ def get_starting_yard(game_id,team_abbr):
     
     return actions
 
+baltimore17 = get_drive_info('BAL', 2017)
+
+baltimore18 = get_drive_info("BAL", 2018)
+
+baltimore19 = get_drive_info("BAL", 2019)
+baltimore17.extend(baltimore18)
+baltimore17.extend(baltimore19)
 
 
 def touchdown(team_list, team):
@@ -319,4 +328,74 @@ def create_histogram(team_list, team):
     plt.title("Touchdowns")
     plt.tight_layout()
     plt.show()
+#create_histogram(baltimore17, 'bal')
 
+def func(x,a,b,c):
+    return a * np.exp(-b*x) + c
+
+def probability_graph(team_abbr, team_list):
+    """
+    
+
+    Parameters
+    ----------
+    team_abbr : str
+        DESCRIPTION.
+    team_list : list
+        DESCRIPTION.
+
+    Returns
+    -------
+    Displays a graph of the probabilities of scoring a TD
+    from any given starting yardline.
+
+    """
+    td_drives, drive_lengths = touchdown(team_list, team_abbr)
+    
+    yards = np.arange(0,101,5)
+    totals = []
+    total_td = []
+    for i in range(len(yards)-1):
+        sub_yard = []
+        for line in drive_lengths:
+            if line > yards[i] and line <= yards[i+1]:
+                sub_yard.append(line)
+        totals.append(len(sub_yard))
+        sub_td = []
+        for line in td_drives:
+            if line > yards[i] and line <= yards[i+1]:
+                sub_td.append(line)
+        total_td.append(len(sub_td))
+    x = np.arange(0,100,5)
+    prob = [total_td[j]/totals[j] for j in range(len(total_td))]
+    
+    
+    
+    #Attempt to curve fit, looks good but I'm not sure how accurate it is
+    """plt.plot(x, prob, 'b.', label='data')
+    popt, pcov = curve_fit(func, x, prob)
+    plt.plot(x, func(x, *popt), 'r-')"""
+    
+    #Just a simple bar plot of the probabilities at each yardline
+    """#plt.bar(x,prob, align='edge')
+    plt.plot(x,prob,'r.')"""
+    
+    plt.title("Probabilities")
+    plt.tight_layout()
+    plt.show()
+#probability_graph('bal', baltimore17)
+            
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
